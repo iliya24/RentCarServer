@@ -5,6 +5,7 @@ using System.Linq;
 using ServerRentCar.Models;
 using Microsoft.EntityFrameworkCore;
 using ServerRentCar.DTO;
+using ServerRentCar.Auth;
 
 namespace ServerRentCar.Utils
 {
@@ -22,6 +23,7 @@ namespace ServerRentCar.Utils
 
 
                 cfg.CreateMap<User, DTO.UserDTO>();
+                cfg.CreateMap<RegisterModel, User>();
             });
             return config.CreateMapper();
         }

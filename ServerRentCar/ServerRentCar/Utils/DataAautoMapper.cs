@@ -6,6 +6,7 @@ using ServerRentCar.Models;
 using Microsoft.EntityFrameworkCore;
 using ServerRentCar.DTO;
 using ServerRentCar.Auth;
+using ServerRentCar.Common.Enums;
 
 namespace ServerRentCar.Utils
 {
@@ -22,10 +23,18 @@ namespace ServerRentCar.Utils
             var config = new MapperConfiguration(cfg => {
 
 
-                cfg.CreateMap<User, DTO.UserDTO>();
+                cfg.CreateMap<User, UserDTO>()
+                .ForMember(dst => dst.Gender, opt => opt.MapFrom(srs => ConvertUserSex(srs.Gender)));
                 cfg.CreateMap<RegisterModel, User>();
             });
             return config.CreateMapper();
+        }
+
+        private UserSex ConvertUserSex(bool gender)
+        {
+            if (gender)
+                return UserSex.Male;
+            return UserSex.Female;
         }
 
 

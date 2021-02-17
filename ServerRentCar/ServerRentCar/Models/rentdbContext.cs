@@ -27,7 +27,6 @@ namespace ServerRentCar.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-
             }
         }
 

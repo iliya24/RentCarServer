@@ -1,10 +1,14 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ServerRentCar.Models;
+using ServerRentCar.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +29,8 @@ namespace ServerRentCar
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<rentdbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RentCarDb")));
+            services.AddScoped<DataAautoMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

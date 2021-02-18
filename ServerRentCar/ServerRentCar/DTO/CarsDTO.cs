@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ServerRentCar.Common.Enums
+namespace ServerRentCar.DTO
 {
-    public enum UserSex:byte
+    public class CarsDTO
     {
-        Male,
-        Female
     }
 }

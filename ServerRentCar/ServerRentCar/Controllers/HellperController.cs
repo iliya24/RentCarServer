@@ -28,6 +28,7 @@ namespace ServerRentCar.Controllers
 
 
         [HttpPost]
+        [Route("AddImageTocar")]
         public IActionResult AddImageTocar(Hellper hellper)
         {
             var car = _rentdbContext.Cars.Find(hellper.licensePlate);
@@ -35,6 +36,18 @@ namespace ServerRentCar.Controllers
             _rentdbContext.SaveChanges();
             return File(car.CarImage, "image/png");
         }
+
+        /// <summary>
+        /// Get All Users
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Produces("application/json")]
+        public IActionResult Get()
+        {
+            return Ok(_dataAautoMapper.GetDTOList<User, UserDTO>(_rentdbContext.Users));
+        }
+
     }
 
 }

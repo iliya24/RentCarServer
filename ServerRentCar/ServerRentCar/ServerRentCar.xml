@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ServerRentCar</name>
+    </assembly>
+    <members>
+        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Users},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService)">
+            <summary>
+            Contractor
+            </summary>
+            <param name="logger"></param>
+            <param name="rentdbContext"></param>
+            <param name="recordService"></param>
+            <param name="dataAautoMapper"></param>
+            <param name="userService"></param>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.Get(System.Int32)">
+            <summary>
+            Retrives cars rent records
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Images.Get(System.String)">
+            <summary>
+            Gets car image by licensePlate
+            </summary>
+            <param name="licensePlate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.HellperController.Get">
+            <summary>
+            Get All Users
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Users.Get(System.Int32)">
+            <summary>
+            Retrives cars rent records per user
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.AuthService.IsInRole(ServerRentCar.Common.Enums.Role,System.Int32)">
+            <summary>
+            Checks if user is in role  return true else exist or not admin false
+            </summary>
+            <param name="role"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.GetAllrecords">
+            <summary>
+            Gets all records
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.GetPerUser(System.Int32)">
+            <summary>
+            Gets  records per user
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

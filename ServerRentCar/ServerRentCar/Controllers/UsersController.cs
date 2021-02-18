@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ServerRentCar.Auth;
+using ServerRentCar.Common.Enums;
 using ServerRentCar.DTO;
 using ServerRentCar.Models;
 using ServerRentCar.Services;
@@ -19,36 +20,36 @@ namespace ServerRentCar.Controllers
     [Route("[controller]")]
     public class Users : ControllerBase
     {
-
         private readonly ILogger<Users> _logger;
         private rentdbContext _rentdbContext;
         private DataAautoMapper _dataAautoMapper;
         private UserService _userService;
+        private AuthService _authService;
+        private RecordService _recordService;
+        private CarsService _carService;
         public Users(ILogger<Users> logger, rentdbContext rentdbContext, DataAautoMapper dataAautoMapper,
-            UserService userService)
+            UserService userService,AuthService authService,RecordService recordService, CarsService carService)
         {
             _logger = logger;
             _rentdbContext = rentdbContext;
             _dataAautoMapper = dataAautoMapper;
             _userService = userService;
+            _authService = authService;
+            _recordService = recordService;
+            _carService = carService;
         }
-
-        [HttpGet]
-        [Produces("application/json")]
-        public IActionResult Get()
-        {
-            return Ok(_dataAautoMapper.GetDTOList<User, UserDTO>(_rentdbContext.Users));
-        }
-
-
+                
         [HttpPost]
         [Route("Login")]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Login(LogInModel login)
         {
             var user = _rentdbContext.Users.Find(login.UserName);
-            return Ok(user != null && user.Password == login.Password);
-
+            if(user== null || user.Password != login.Password)
+                return Ok(StatusCodes.Status401Unauthorized);
+            return Ok(user);
         }
         [HttpPost]
         [Route("Register")]
@@ -64,5 +65,44 @@ namespace ServerRentCar.Controllers
             else
                 return Ok(StatusCodes.Status500InternalServerError);
         }
+
+        /// <summary>
+        /// Retrives cars rent records per user
+        /// </summary>
+        /// <param name="userdId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("records/{userdId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetRecordPerUser(int userdId)
+        {
+            if (_authService.IsInRole(Role.Customer,userdId))
+            {
+                return Ok(_recordService.GetPerUser(userdId));
+            }
+            return Ok(StatusCodes.Status401Unauthorized);
+        }
+
+        /// <summary>
+        /// /Get avalible cars for rent
+        /// </summary>
+        /// <param name="userdId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("freecars/{userdId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetAvalibaleCars(int userdId)
+        {
+            if (_authService.IsInRole(Role.Customer, userdId))
+            {
+                return Ok(_carService.GetAvalibaleCars());
+            }
+            return Ok(StatusCodes.Status401Unauthorized);
+        }
     }
 }
+ 

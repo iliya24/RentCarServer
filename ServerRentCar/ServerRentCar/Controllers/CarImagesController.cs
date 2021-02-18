@@ -26,7 +26,12 @@ namespace ServerRentCar.Controllers
             _dataAautoMapper = dataAautoMapper;
         }
 
-        [HttpGet("{licensePlate}")]
+        /// <summary>
+        /// Gets car image by licensePlate
+        /// </summary>
+        /// <param name="licensePlate"></param>
+        /// <returns></returns>
+        [HttpGet("{licensePlate}")]        
         public IActionResult Get(string licensePlate)
         {
             var car = _rentdbContext.Cars.Find(licensePlate);

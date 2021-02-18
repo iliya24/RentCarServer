@@ -14,7 +14,9 @@ using ServerRentCar.Utils;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ServerRentCar
@@ -41,10 +43,16 @@ namespace ServerRentCar
                     Version = "v1"
                     
                 });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
             });
             services.AddDbContext<rentdbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RentCarDb")));
             services.AddScoped<DataAautoMapper>();
             services.AddScoped<UserService>();
+            services.AddScoped<RecordService>();
+            services.AddScoped<AuthService>();
+            
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,

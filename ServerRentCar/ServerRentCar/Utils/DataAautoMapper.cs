@@ -26,22 +26,18 @@ namespace ServerRentCar.Utils
                 cfg.CreateMap<User, UserDTO>()
                 .ForMember(dst => dst.Gender, opt => opt.MapFrom(srs => ConvertUserSex(srs.Gender)));
                 cfg.CreateMap<RegisterModel, User>();
+                cfg.CreateMap<CarRentRecord, CarRentRecordDTO>();
             });
             return config.CreateMapper();
         }
 
-        private UserSex ConvertUserSex(bool gender)
+        private UserGender ConvertUserSex(bool gender)
         {
             if (gender)
-                return UserSex.Male;
-            return UserSex.Female;
+                return UserGender.Male;
+            return UserGender.Female;
         }
-
-
-        //internal IEnumerable<UserDTO> GetUserDTO(IEnumerable<User> users)
-        //{
-        //    return _mapper.Map<IEnumerable<UserDTO>>(users);
-        //}
+       
         internal IEnumerable<Treturn> GetDTOList<Tin, Treturn>(IEnumerable<Tin> objects)
         {
 

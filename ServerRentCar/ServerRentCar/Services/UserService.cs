@@ -30,7 +30,7 @@ namespace ServerRentCar.Services
         {
             try
             {
-                var user = _dataAautoMapper.GetDTOInstance<RegisterModel, User>(registerModel);
+                var user = _dataAautoMapper.GetInstance<RegisterModel, User>(registerModel);
                 _rentdbContext.Add(user);
                 _rentdbContext.SaveChanges();
                 return true;

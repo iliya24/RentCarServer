@@ -4,7 +4,7 @@
         <name>ServerRentCar</name>
     </assembly>
     <members>
-        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Users},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService)">
+        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Users},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService,ServerRentCar.Services.CarsService)">
             <summary>
             Contractor
             </summary>
@@ -19,6 +19,14 @@
             Retrives cars rent records
             </summary>
             <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.DeleteCar(System.Int32,System.String)">
+            <summary>
+            Deletes car from inventory
+            </summary>
+            <param name="userdId"></param>
+            <param name="licensePlate"></param>
             <returns></returns>
         </member>
         <member name="M:ServerRentCar.Controllers.Images.Get(System.String)">
@@ -60,6 +68,13 @@
             <summary>
             Get avalible cars for rent
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.CarsService.DeleteCar(System.String)">
+            <summary>
+            /Deletes car from inventory
+            </summary>
+            <param name="licensePlate"></param>
             <returns></returns>
         </member>
         <member name="M:ServerRentCar.Services.RecordService.GetAllrecords">

@@ -45,7 +45,7 @@ namespace ServerRentCar.Controllers
         [Produces("application/json")]
         public IActionResult Get()
         {
-            return Ok(_dataAautoMapper.GetDTOList<User, UserDTO>(_rentdbContext.Users));
+            return Ok(_dataAautoMapper.GetList<User, UserDTO>(_rentdbContext.Users));
         }
 
     }

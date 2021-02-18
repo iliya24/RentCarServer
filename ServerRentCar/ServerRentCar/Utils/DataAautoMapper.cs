@@ -27,6 +27,8 @@ namespace ServerRentCar.Utils
                 .ForMember(dst => dst.Gender, opt => opt.MapFrom(srs => ConvertUserSex(srs.Gender)));
                 cfg.CreateMap<RegisterModel, User>();
                 cfg.CreateMap<CarRentRecord, CarRentRecordDTO>();
+                cfg.CreateMap<Car,CarsDTO> ();
+                cfg.CreateMap<CarsDTO, Car>();
             });
             return config.CreateMapper();
         }
@@ -36,19 +38,14 @@ namespace ServerRentCar.Utils
             if (gender)
                 return UserGender.Male;
             return UserGender.Female;
-        }
-       
-        internal IEnumerable<Treturn> GetDTOList<Tin, Treturn>(IEnumerable<Tin> objects)
+        }       
+        internal IEnumerable<Treturn> GetList<Tin, Treturn>(IEnumerable<Tin> objects)
         {
-
-
             return  _mapper.Map<IEnumerable<Treturn>>(objects);
         }
-        internal  Treturn GetDTOInstance<Tin, Treturn>(Tin obj)
+        internal  Treturn GetInstance<Tin, Treturn>(Tin obj)
         {
             return _mapper.Map<Treturn>(obj);
         }
-
-
     }
 }

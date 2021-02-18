@@ -28,7 +28,7 @@ namespace ServerRentCar.Services
         /// <returns></returns>
         internal IEnumerable<CarRentRecordDTO> GetAllrecords()
         {
-           return _dataAautoMapper.GetDTOList<CarRentRecord, CarRentRecordDTO> (_rentdbContext.CarRentRecords);
+           return _dataAautoMapper.GetList<CarRentRecord, CarRentRecordDTO> (_rentdbContext.CarRentRecords);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace ServerRentCar.Services
         {
             var records = _rentdbContext.CarRentRecords.Where(rec => rec.UserId == userId);
             if (records != null)
-                return _dataAautoMapper.GetDTOList<CarRentRecord, CarRentRecordDTO>(records);
+                return _dataAautoMapper.GetList<CarRentRecord, CarRentRecordDTO>(records);
             else return null;
         }
     }

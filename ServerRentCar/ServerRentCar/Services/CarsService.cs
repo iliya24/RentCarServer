@@ -22,18 +22,49 @@ namespace ServerRentCar.Services
             _dataAautoMapper = dataAautoMapper;
             _logger = logger;
         }
-       /// <summary>
-       /// Get avalible cars for rent
-       /// </summary>
-       /// <returns></returns>
+        /// <summary>
+        /// Get avalible cars for rent
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<CarsDTO> GetAvalibaleCars()
         {
             var cars = _rentdbContext.Cars.Where(car => car.IsFreeForRent).ToList();
             if (cars != null)
             {
-                return _dataAautoMapper.GetDTOList<Car, CarsDTO>(cars);
+                return _dataAautoMapper.GetList<Car, CarsDTO>(cars);
             }
             return null;
+        }
+
+        internal object UpdateCar(CarsDTO car)
+        {
+           
+            var dalCar = _dataAautoMapper.GetInstance<CarsDTO, Car>(car);
+            _rentdbContext.Cars.Update(dalCar);
+            _rentdbContext.SaveChanges();
+            return true;
+        }
+
+        /// <summary>
+        /// /Deletes car from inventory
+        /// </summary>
+        /// <param name="licensePlate"></param>
+        /// <returns></returns>
+        internal bool DeleteCar(string licensePlate)
+        {
+            try
+            {
+                var car = _rentdbContext.Cars.Find(licensePlate);
+                var carTypes = _rentdbContext.CarsTypes.Find(car.CarsTypesId);
+                _rentdbContext.Cars.Remove(car);
+                _rentdbContext.CarsTypes.Remove(carTypes);
+                _rentdbContext.SaveChanges();
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
         }
     }
 }

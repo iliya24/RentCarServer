@@ -34,9 +34,16 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ServerRentCar.Controllers.Users.Get(System.Int32)">
+        <member name="M:ServerRentCar.Controllers.Users.GetRecordPerUser(System.Int32)">
             <summary>
             Retrives cars rent records per user
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Users.GetAvalibaleCars(System.Int32)">
+            <summary>
+            /Get avalible cars for rent
             </summary>
             <param name="userdId"></param>
             <returns></returns>
@@ -47,6 +54,12 @@
             </summary>
             <param name="role"></param>
             <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.CarsService.GetAvalibaleCars">
+            <summary>
+            Get avalible cars for rent
+            </summary>
             <returns></returns>
         </member>
         <member name="M:ServerRentCar.Services.RecordService.GetAllrecords">

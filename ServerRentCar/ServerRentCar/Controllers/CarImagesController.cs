@@ -18,12 +18,12 @@ namespace ServerRentCar.Controllers
 
         private readonly ILogger<Users> _logger;
         private rentdbContext _rentdbContext;
-        private DataAautoMapper _dataAautoMapper;
-        public Images(ILogger<Users> logger, rentdbContext rentdbContext, DataAautoMapper dataAautoMapper)
+     
+        public Images(ILogger<Users> logger, rentdbContext rentdbContext)
         {
             _logger = logger;
             _rentdbContext = rentdbContext;
-            _dataAautoMapper = dataAautoMapper;
+            
         }
 
         /// <summary>

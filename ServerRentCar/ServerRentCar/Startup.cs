@@ -52,7 +52,7 @@ namespace ServerRentCar
             services.AddScoped<UserService>();
             services.AddScoped<RecordService>();
             services.AddScoped<AuthService>();
-            
+            services.AddScoped<CarsService>();
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,

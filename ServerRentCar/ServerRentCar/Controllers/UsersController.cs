@@ -38,7 +38,8 @@ namespace ServerRentCar.Controllers
             _recordService = recordService;
             _carService = carService;
         }
-                
+
+       
         [HttpPost]
         [Route("Login")]
         [Produces("application/json")]
@@ -97,11 +98,19 @@ namespace ServerRentCar.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetAvalibaleCars(int userdId)
         {
+          
             if (_authService.IsInRole(Role.Customer, userdId))
             {
                 return Ok(_carService.GetAvalibaleCars());
             }
             return Ok(StatusCodes.Status401Unauthorized);
+        }
+
+        [HttpGet]
+        public IActionResult Test()
+        {
+            var st = Startup.test;
+            return Ok(st);
         }
     }
 }

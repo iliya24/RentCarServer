@@ -2,9 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>98987171-a008-45fb-b91c-4dfefb86bf59</UserSecretsId>
+    <Configurations>Debug;Release;QA</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>5</WarningLevel>
+    <DocumentationFile>C:\Users\itzukerman\dev\ServerRentCar\ServerRentCar\ServerRentCar\ServerRentCar.xml</DocumentationFile>
+    <NoWarn>1701;1702;CS1591</NoWarn>
+  </PropertyGroup>
+   
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='QA|AnyCPU'">
     <WarningLevel>5</WarningLevel>
     <DocumentationFile>C:\Users\itzukerman\dev\ServerRentCar\ServerRentCar\ServerRentCar\ServerRentCar.xml</DocumentationFile>
     <NoWarn>1701;1702;CS1591</NoWarn>

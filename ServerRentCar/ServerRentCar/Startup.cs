@@ -23,10 +23,18 @@ namespace ServerRentCar
 {
     public class Startup
     {
+        public static string test;
+        private readonly IWebHostEnvironment _env;
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-        public Startup(IConfiguration configuration)
+        public Startup( IConfiguration configuration, IWebHostEnvironment env)
         {
+            //test = env.EnvironmentName;
+          
+            //configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json")
+            //.AddJsonFile("appsettings." + env.EnvironmentName + ".json").Build();
+             
             Configuration = configuration;
+             
         }
 
         public IConfiguration Configuration { get; }
@@ -35,18 +43,19 @@ namespace ServerRentCar
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-               services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new  OpenApiInfo
-                {
-                    Title = "RentCar API",
-                    Version = "v1"
-                    
-                });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
-            });
+            services.AddSwaggerGen(options =>
+         {
+             options.SwaggerDoc("v1", new OpenApiInfo
+             {
+                 Title = "RentCar API",
+                 Version = "v1"
+
+             });
+             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+             options.IncludeXmlComments(xmlPath);
+         });
+             test = Configuration.GetConnectionString("RentCarDb");
             services.AddDbContext<rentdbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RentCarDb")));
             services.AddScoped<DataAautoMapper>();
             services.AddScoped<UserService>();
@@ -74,7 +83,7 @@ namespace ServerRentCar
             //{
             //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RentCar API V1");
             //});
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -90,7 +99,11 @@ namespace ServerRentCar
             });
 
             app.UseSwagger();
-            app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Rent Car API"));
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Rent Car API");
+                options.RoutePrefix = "swagger";
+            });
         }
     }
 }

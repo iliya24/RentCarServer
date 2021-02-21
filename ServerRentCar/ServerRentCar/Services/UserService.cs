@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ServerRentCar.Auth;
+using ServerRentCar.DTO;
 using ServerRentCar.Models;
 using ServerRentCar.Utils;
 using System;
@@ -26,19 +27,20 @@ namespace ServerRentCar.Services
             return _rentdbContext.Users.Where(obj => obj.UserName == registerModel.UserName).FirstOrDefault() == null ? false : true;
         }
 
-        internal bool Register(RegisterModel registerModel)
+        internal UserDTO Register(RegisterModel registerModel)
         {
             try
             {
                 var user = _dataAautoMapper.GetInstance<RegisterModel, User>(registerModel);
                 _rentdbContext.Add(user);
                 _rentdbContext.SaveChanges();
-                return true;
+               var userDTO= _dataAautoMapper.GetInstance<User, UserDTO>(user);
+                return userDTO;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Faield to create user due to :{ex}");
-                return false;
+                return null;
             }
 
         }

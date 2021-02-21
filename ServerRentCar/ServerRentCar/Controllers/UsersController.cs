@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ServerRentCar.Auth;
 using ServerRentCar.Common.Enums;
-using ServerRentCar.DTO;
+using Microsoft.Extensions.Configuration;
 using ServerRentCar.Models;
 using ServerRentCar.Services;
 using ServerRentCar.Utils;
@@ -13,9 +14,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ServerRentCar.DTO;
 
 namespace ServerRentCar.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
     public class Users : ControllerBase
@@ -27,8 +30,11 @@ namespace ServerRentCar.Controllers
         private AuthService _authService;
         private RecordService _recordService;
         private CarsService _carService;
+        private IConfiguration _configuration;
+  
         public Users(ILogger<Users> logger, rentdbContext rentdbContext, DataAautoMapper dataAautoMapper,
-            UserService userService,AuthService authService,RecordService recordService, CarsService carService)
+            UserService userService, AuthService authService, RecordService recordService, CarsService carService,
+            IConfiguration configuration)
         {
             _logger = logger;
             _rentdbContext = rentdbContext;
@@ -37,20 +43,37 @@ namespace ServerRentCar.Controllers
             _authService = authService;
             _recordService = recordService;
             _carService = carService;
+            _configuration = configuration;
+          
         }
 
-       
+
         [HttpPost]
         [Route("Login")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public IActionResult Login(LogInModel login)
         {
-            var user = _rentdbContext.Users.Find(login.UserName);
-            if(user== null || user.Password != login.Password)
-                return Ok(StatusCodes.Status401Unauthorized);
-            return Ok(user);
+            try
+            {
+                var user = _rentdbContext.Users.Where(usr => usr.UserName == login.UserName).FirstOrDefault();
+                if (user == null || user.Password != login.Password)
+                    return Ok(StatusCodes.Status401Unauthorized);
+                return Ok(new
+                {
+                    UserId = user.Id,
+                    UserRole =
+                   ((Role)Enum.Parse(typeof(Role), user.Role.ToString())).ToString()
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception in Login due to :" + e);
+                return Ok(StatusCodes.Status500InternalServerError);
+            }
         }
         [HttpPost]
         [Route("Register")]
@@ -59,12 +82,26 @@ namespace ServerRentCar.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Register(RegisterModel registerModel)
         {
-            if (_userService.UserExist(registerModel))
-                return Ok(StatusCodes.Status409Conflict);
-            if (_userService.Register(registerModel))
-                return Ok(StatusCodes.Status201Created);
-            else
+            try
+            {
+
+                if (_userService.UserExist(registerModel))
+                    return Ok(StatusCodes.Status409Conflict);
+                else
+                {
+                    var user = _userService.Register(registerModel);
+                    if (user != null)
+                    {
+                        return Ok(new { UserId = user.Id, UserRole = user.Role });
+                    }
+                    return Ok(StatusCodes.Status500InternalServerError);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception in Register due to :" + e);
                 return Ok(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -77,13 +114,23 @@ namespace ServerRentCar.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetRecordPerUser(int userdId)
         {
-            if (_authService.IsInRole(Role.Customer,userdId))
+            try
             {
-                return Ok(_recordService.GetPerUser(userdId));
+
+                if (_authService.IsInRole(Role.Customer, userdId))
+                {
+                    return Ok(_recordService.GetPerUser(userdId));
+                }
+                return Ok(StatusCodes.Status401Unauthorized);
             }
-            return Ok(StatusCodes.Status401Unauthorized);
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception in GetRecordPerUser due to :" + e);
+                return Ok(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <summary>
@@ -91,27 +138,56 @@ namespace ServerRentCar.Controllers
         /// </summary>
         /// <param name="userdId"></param>
         /// <returns></returns>
+
+        /// <summary>
+        /// /Get avalible cars for rent
+        /// </summary>
+        /// <param name="userdId"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("freecars/{userdId}")]
+        [Route("freecars")]
         [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetAvalibaleCars(int userdId)
+        public IActionResult GetAvalibaleCars()
         {
-          
-            if (_authService.IsInRole(Role.Customer, userdId))
+            var ImageUri = _configuration.GetValue<string>("ImageUri");
+            return Ok(_carService.GetFreeCars(ImageUri));
+        }
+        /// <summary>
+        /// Order crate api for cutomer
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="carRentRecordDTO"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("order/{userId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult OrderCar(int userId, [FromBody] CarRentRecordDTO carRentRecordDTO)
+        {
+            try
             {
-                return Ok(_carService.GetAvalibaleCars());
+                if (_authService.IsInRole(Role.Customer, userId))
+                {
+
+                    if(_recordService.MakAnOrder(carRentRecordDTO))
+                    return Ok(StatusCodes.Status201Created);
+                    else return Ok(StatusCodes.Status500InternalServerError);
+
+                }
+                else
+                {
+                    return Ok(StatusCodes.Status401Unauthorized);
+                }
             }
-            return Ok(StatusCodes.Status401Unauthorized);
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception in OrderCar due to :" + e);
+                return Ok(StatusCodes.Status500InternalServerError);
+            }
         }
 
-        [HttpGet]
-        public IActionResult Test()
-        {
-            var st = Startup.test;
-            return Ok(st);
-        }
     }
 }
- 
+

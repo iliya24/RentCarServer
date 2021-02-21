@@ -14,8 +14,7 @@ namespace ServerRentCar
         static string env = "Development";
         public static void Main(string[] args)
         {
-            //var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            //env = config.GetSection("Enviroment").Value;
+            
             CreateHostBuilder(args).Build().Run();
         }
 

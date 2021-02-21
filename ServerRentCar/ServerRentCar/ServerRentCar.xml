@@ -4,7 +4,7 @@
         <name>ServerRentCar</name>
     </assembly>
     <members>
-        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Users},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService,ServerRentCar.Services.CarsService)">
+        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Users},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService,ServerRentCar.Services.CarsService,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Contractor
             </summary>
@@ -13,6 +13,8 @@
             <param name="recordService"></param>
             <param name="dataAautoMapper"></param>
             <param name="userService"></param>
+            <param name="carService"></param>
+            <param name="_configuration"></param>
         </member>
         <member name="M:ServerRentCar.Controllers.Admin.Get(System.Int32)">
             <summary>
@@ -27,6 +29,13 @@
             </summary>
             <param name="userdId"></param>
             <param name="licensePlate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetAlllCars(System.Int32)">
+            <summary>
+            /Get avalible cars for rent
+            </summary>
+            <param name="userdId"></param>
             <returns></returns>
         </member>
         <member name="M:ServerRentCar.Controllers.Images.Get(System.String)">
@@ -49,7 +58,12 @@
             <param name="userdId"></param>
             <returns></returns>
         </member>
-        <member name="M:ServerRentCar.Controllers.Users.GetAvalibaleCars(System.Int32)">
+        <member name="M:ServerRentCar.Controllers.Users.GetAvalibaleCars">
+            <summary>
+            /Get avalible cars for rent
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
             <summary>
             /Get avalible cars for rent
             </summary>
@@ -64,7 +78,7 @@
             <param name="userId"></param>
             <returns></returns>
         </member>
-        <member name="M:ServerRentCar.Services.CarsService.GetAvalibaleCars">
+        <member name="M:ServerRentCar.Services.CarsService.GetFreeCars(System.String)">
             <summary>
             Get avalible cars for rent
             </summary>

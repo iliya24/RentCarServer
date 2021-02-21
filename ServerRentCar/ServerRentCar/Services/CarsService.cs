@@ -26,19 +26,65 @@ namespace ServerRentCar.Services
         /// Get avalible cars for rent
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<CarsDTO> GetAvalibaleCars()
+        public IEnumerable<CarsDTO> GetFreeCars(string ImageUri)
         {
-            var cars = _rentdbContext.Cars.Where(car => car.IsFreeForRent).ToList();
-            if (cars != null)
+            var freecars = (from cars in _rentdbContext.Cars
+                            join cartypes in _rentdbContext.CarsTypes on cars.CarsTypesId equals cartypes.CarsTypesId
+                            where cars.IsFreeForRent == true && cars.IsFreeForRent
+                            select new CarsDTO()
+                            {
+                                LicensePlate = cars.LicensePlate,
+                                CarsTypesId = cars.CarsTypesId,
+                                Kilometer = cars.Kilometer,
+                                IsValidForRent = cars.IsFreeForRent,
+                                IsFreeForRent = cars.IsFreeForRent,
+
+                                BranchId = cars.BranchId,
+                                CarImage = ImageUri + "/Images/" + cars.LicensePlate,
+                                Manufacture = cartypes.Manufacture,
+                                Model = cartypes.Model,
+                                PricePerDay = cartypes.PricePerDay,
+                                DelayCostPerDay = cartypes.DelayCostPerDay,
+                                YearRelease = cartypes.YearRelease,
+                                Gear = cartypes.Gear,
+
+                            }
+                ).ToList();
+            if (freecars != null)
             {
-                return _dataAautoMapper.GetList<Car, CarsDTO>(cars);
+                return freecars;//
             }
             return null;
         }
+        public IEnumerable<CarsDTO> GetAlllCars(string ImageUri)
+        {
+            var freecars = (from cars in _rentdbContext.Cars
+                            join cartypes in _rentdbContext.CarsTypes on cars.CarsTypesId equals cartypes.CarsTypesId
+                            select new CarsDTO()
+                            {
+                                LicensePlate = cars.LicensePlate,
+                                CarsTypesId = cars.CarsTypesId,
+                                Kilometer = cars.Kilometer,
+                                IsValidForRent = cars.IsFreeForRent,
+                                IsFreeForRent = cars.IsFreeForRent,
 
+                                BranchId = cars.BranchId,
+                                CarImage = ImageUri + "/Images/" + cars.LicensePlate,
+                                Manufacture = cartypes.Manufacture,
+                                Model = cartypes.Model,
+                                PricePerDay = cartypes.PricePerDay,
+                                DelayCostPerDay = cartypes.DelayCostPerDay,
+                                YearRelease = cartypes.YearRelease,
+                                Gear = cartypes.Gear,
+
+                            }
+                ).ToList();
+             
+            return freecars;
+        }
         internal object UpdateCar(CarsDTO car)
         {
-           
+
             var dalCar = _dataAautoMapper.GetInstance<CarsDTO, Car>(car);
             _rentdbContext.Cars.Update(dalCar);
             _rentdbContext.SaveChanges();
@@ -61,7 +107,7 @@ namespace ServerRentCar.Services
                 _rentdbContext.SaveChanges();
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }

@@ -14,7 +14,6 @@ namespace ServerRentCar.Models
         public int UserId { get; set; }
         public string LicensePlate { get; set; }
 
-        public virtual Car LicensePlateNavigation { get; set; }
         public virtual User User { get; set; }
     }
 }

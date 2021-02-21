@@ -23,8 +23,7 @@ namespace ServerRentCar.Utils
             var config = new MapperConfiguration(cfg => {
 
 
-                cfg.CreateMap<User, UserDTO>()
-                .ForMember(dst => dst.Gender, opt => opt.MapFrom(srs => ConvertUserSex(srs.Gender)));
+                cfg.CreateMap<User, UserDTO>();               
                 cfg.CreateMap<RegisterModel, User>();
                 cfg.CreateMap<CarRentRecord, CarRentRecordDTO>();
                 cfg.CreateMap<Car,CarsDTO> ();
@@ -47,5 +46,7 @@ namespace ServerRentCar.Utils
         {
             return _mapper.Map<Treturn>(obj);
         }
+
+        
     }
 }

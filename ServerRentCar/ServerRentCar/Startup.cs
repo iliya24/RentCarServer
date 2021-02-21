@@ -23,18 +23,18 @@ namespace ServerRentCar
 {
     public class Startup
     {
-        public static string test;
+        
         private readonly IWebHostEnvironment _env;
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-        public Startup( IConfiguration configuration, IWebHostEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             //test = env.EnvironmentName;
-          
+
             //configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json")
             //.AddJsonFile("appsettings." + env.EnvironmentName + ".json").Build();
-             
+
             Configuration = configuration;
-             
+
         }
 
         public IConfiguration Configuration { get; }
@@ -42,7 +42,7 @@ namespace ServerRentCar
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+
             services.AddSwaggerGen(options =>
          {
              options.SwaggerDoc("v1", new OpenApiInfo
@@ -55,24 +55,25 @@ namespace ServerRentCar
              var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
              options.IncludeXmlComments(xmlPath);
          });
-             test = Configuration.GetConnectionString("RentCarDb");
             services.AddDbContext<rentdbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RentCarDb")));
             services.AddScoped<DataAautoMapper>();
             services.AddScoped<UserService>();
             services.AddScoped<RecordService>();
             services.AddScoped<AuthService>();
             services.AddScoped<CarsService>();
+            services.AddSingleton<IConfiguration>(Configuration);
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins(Configuration.GetSection("AllowedHosts").Value)
-                                                          .AllowAnyHeader()
-                                                          .AllowAnyMethod();
+                                      builder.AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                     .AllowAnyHeader();
                                   });
             });
-
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,7 +91,8 @@ namespace ServerRentCar
             }
 
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

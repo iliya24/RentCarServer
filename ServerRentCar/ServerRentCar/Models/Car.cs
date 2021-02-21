@@ -7,11 +7,6 @@ namespace ServerRentCar.Models
 {
     public partial class Car
     {
-        public Car()
-        {
-            CarRentRecords = new HashSet<CarRentRecord>();
-        }
-
         public string LicensePlate { get; set; }
         public int CarsTypesId { get; set; }
         public string Kilometer { get; set; }
@@ -22,6 +17,5 @@ namespace ServerRentCar.Models
 
         public virtual Branch Branch { get; set; }
         public virtual CarsType CarsTypes { get; set; }
-        public virtual ICollection<CarRentRecord> CarRentRecords { get; set; }
     }
 }

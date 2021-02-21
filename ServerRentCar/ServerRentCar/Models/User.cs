@@ -18,11 +18,11 @@ namespace ServerRentCar.Models
         public string FirstName { get; set; }
         public string UserName { get; set; }
         public DateTime? BirthDate { get; set; }
-        public bool Gender { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public byte[] UserPicture { get; set; }
         public byte Role { get; set; }
+        public string Gender { get; set; }
 
         public virtual ICollection<CarRentRecord> CarRentRecords { get; set; }
     }

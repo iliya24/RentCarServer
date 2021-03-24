@@ -31,7 +31,7 @@ namespace ServerRentCar.Controllers
         private RecordService _recordService;
         private CarsService _carService;
         private IConfiguration _configuration;
-  
+
         public Users(ILogger<Users> logger, rentdbContext rentdbContext, DataAautoMapper dataAautoMapper,
             UserService userService, AuthService authService, RecordService recordService, CarsService carService,
             IConfiguration configuration)
@@ -44,9 +44,13 @@ namespace ServerRentCar.Controllers
             _recordService = recordService;
             _carService = carService;
             _configuration = configuration;
-          
-        }
 
+        }
+        /// <summary>
+        /// login user to system an returns user order records
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
 
         [HttpPost]
         [Route("Login")]
@@ -59,22 +63,77 @@ namespace ServerRentCar.Controllers
         {
             try
             {
-                var user = _rentdbContext.Users.Where(usr => usr.UserName == login.UserName).FirstOrDefault();
-                if (user == null || user.Password != login.Password)
-                    return Ok(StatusCodes.Status401Unauthorized);
-                return Ok(new
+                if (ModelState.IsValid)
                 {
-                    UserId = user.Id,
-                    UserRole =
-                   ((Role)Enum.Parse(typeof(Role), user.Role.ToString())).ToString()
-                });
+                    var user = _userService.GetUser(login.UserName);
+                    if (user == null || user.Password != login.Password)
+                        return Unauthorized(StatusCodes.Status401Unauthorized);
+                    else
+                    {
+                        var records = _recordService.GetAllrecordsPerUser(user.Id);
+                        return Ok(new
+                        {
+                            UserId = user.Id,
+                            UserRole =
+                           ((Role)Enum.Parse(typeof(Role), user.Role.ToString())).ToString(),
+                            UserRecords = records
+                        });
+
+                    }
+                }
+                else return ValidationProblem("One of the fileds is wrong", "", StatusCodes.Status500InternalServerError);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Exception in Login due to :" + e);
-                return Ok(StatusCodes.Status500InternalServerError);
+                return BadRequest(StatusCodes.Status500InternalServerError);
             }
         }
+
+
+        /// <summary>
+        /// login user to system an returns user order records Json Wise
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("JsonLogin")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public IActionResult LoginJson(LogInModel login)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = _userService.GetUser(login.UserName);
+                    if (user == null || user.Password != login.Password)
+                        return Unauthorized(StatusCodes.Status401Unauthorized);
+                    else
+                    {
+                        var records = _recordService.GetAllrecordsPerUserJson(user.Id);
+                        return Ok(new
+                        {
+                            UserId = user.Id,
+                            UserRole =
+                           ((Role)Enum.Parse(typeof(Role), user.Role.ToString())).ToString(),
+                            UserRecords = records
+                        });
+
+                    }
+                }
+                else return ValidationProblem("One of the fileds is wrong", "", StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception in Login due to :" + e);
+                return BadRequest(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -84,23 +143,31 @@ namespace ServerRentCar.Controllers
         {
             try
             {
+                if (ModelState.IsValid)
+                {
 
-                if (_userService.UserExist(registerModel))
-                    return Ok(StatusCodes.Status409Conflict);
+                    if (_userService.UserExist(registerModel))
+                        return BadRequest(StatusCodes.Status409Conflict);
+                    else
+                    {
+
+                        var user = _userService.Register(registerModel);
+                        if (user != null)
+                        {
+                            return Ok(user);
+                        }
+                        return BadRequest(StatusCodes.Status409Conflict);
+                    }
+                }
                 else
                 {
-                    var user = _userService.Register(registerModel);
-                    if (user != null)
-                    {
-                        return Ok(new { UserId = user.Id, UserRole = user.Role });
-                    }
-                    return Ok(StatusCodes.Status500InternalServerError);
+                    return ValidationProblem("One of the fileds is wrong", "", StatusCodes.Status500InternalServerError);
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError($"Exception in Register due to :" + e);
-                return Ok(StatusCodes.Status500InternalServerError);
+                return BadRequest(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -124,7 +191,8 @@ namespace ServerRentCar.Controllers
                 {
                     return Ok(_recordService.GetPerUser(userdId));
                 }
-                return Ok(StatusCodes.Status401Unauthorized);
+
+                return Unauthorized(StatusCodes.Status401Unauthorized);
             }
             catch (Exception e)
             {
@@ -164,21 +232,30 @@ namespace ServerRentCar.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult OrderCar(int userId, [FromBody] CarRentRecordDTO carRentRecordDTO)
+        public IActionResult OrderCar(int userId, [FromBody] NewCarRentRecordDTO carRentRecordDTO)
         {
             try
             {
                 if (_authService.IsInRole(Role.Customer, userId))
                 {
 
-                    if(_recordService.MakAnOrder(carRentRecordDTO))
-                    return Ok(StatusCodes.Status201Created);
+                    if (_recordService.MakAnOrder(carRentRecordDTO, userId))
+                    {
+
+                        var records = _recordService.GetAllrecordsPerUser(userId);
+                        return Ok(new
+                        {
+
+                           UserRecords = records
+                        });
+
+                    }
                     else return Ok(StatusCodes.Status500InternalServerError);
 
                 }
                 else
                 {
-                    return Ok(StatusCodes.Status401Unauthorized);
+                    return Unauthorized(StatusCodes.Status401Unauthorized);
                 }
             }
             catch (Exception e)

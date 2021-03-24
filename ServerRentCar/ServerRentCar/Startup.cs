@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ServerRentCar.Common.Converters;
+using ServerRentCar.Common.Util;
 using ServerRentCar.Models;
 using ServerRentCar.Services;
 using ServerRentCar.Utils;
@@ -61,8 +63,10 @@ namespace ServerRentCar
             services.AddScoped<RecordService>();
             services.AddScoped<AuthService>();
             services.AddScoped<CarsService>();
+            services.AddScoped<GenericClinetTableBuilder>();
+            
             services.AddSingleton<IConfiguration>(Configuration);
-
+             
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,

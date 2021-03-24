@@ -4,7 +4,15 @@
         <name>ServerRentCar</name>
     </assembly>
     <members>
-        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Users},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService,ServerRentCar.Services.CarsService,Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:ServerRentCar.Common.Util.GenericClinetTableBuilder.BuildJsonTable``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Returns JSON string
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableRows"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.Admin},ServerRentCar.Services.RecordService,ServerRentCar.Services.UserService,ServerRentCar.Services.CarsService,Microsoft.Extensions.Configuration.IConfiguration,ServerRentCar.Services.AuthService)">
             <summary>
             Contractor
             </summary>
@@ -16,26 +24,78 @@
             <param name="carService"></param>
             <param name="_configuration"></param>
         </member>
-        <member name="M:ServerRentCar.Controllers.Admin.Get(System.Int32)">
+        <member name="M:ServerRentCar.Controllers.Admin.GetUsersJson(System.Int32)">
+            <summary>
+            Retrives users json test
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetRecords(System.Int32)">
             <summary>
             Retrives cars rent records
             </summary>
             <param name="userdId"></param>
             <returns></returns>
         </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetRecordsJson(System.Int32)">
+            <summary>
+            Retrives cars rent record as Json
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetAlllCars(System.Int32)">
+            <summary>
+            /Get all cars for rent
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetAlllCarsJson(System.Int32)">
+            <summary>
+            /Get all cars for rent in json format
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetAlllCarsTypesJson(System.Int32)">
+            <summary>
+            /Get all carstypes for rent in json format
+            </summary>
+            <param name="userdId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetRecordsPerUser(System.Int32,System.Int32)">
+            <summary>
+            Retrives cars rent records per user
+            </summary>
+            <param name="userdId"></param>
+            /// <param name="filterByUserId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Admin.GetRecordsPerUserJson(System.Int32,System.Int32)">
+            <summary>
+            Retrives cars rent records per user Json
+            </summary>
+            <param name="userdId"></param>
+            /// <param name="filterByUserId"></param>
+            <returns></returns>
+        </member>
         <member name="M:ServerRentCar.Controllers.Admin.DeleteCar(System.Int32,System.String)">
             <summary>
-            Deletes car from inventory
+            Delete car from inventory
             </summary>
             <param name="userdId"></param>
             <param name="licensePlate"></param>
             <returns></returns>
         </member>
-        <member name="M:ServerRentCar.Controllers.Admin.GetAlllCars(System.Int32)">
+        <member name="M:ServerRentCar.Controllers.Admin.DeleteCarType(System.Int32,System.Int32)">
             <summary>
-            /Get avalible cars for rent
+            Delete carsTypesId from inventory by carsTypesId
             </summary>
             <param name="userdId"></param>
+            <param name="carsTypesId"></param>
             <returns></returns>
         </member>
         <member name="M:ServerRentCar.Controllers.Images.Get(System.String)">
@@ -49,6 +109,20 @@
             <summary>
             Get All Users
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Users.Login(ServerRentCar.Auth.LogInModel)">
+            <summary>
+            login user to system an returns user order records
+            </summary>
+            <param name="login"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.Users.LoginJson(ServerRentCar.Auth.LogInModel)">
+            <summary>
+            login user to system an returns user order records Json Wise
+            </summary>
+            <param name="login"></param>
             <returns></returns>
         </member>
         <member name="M:ServerRentCar.Controllers.Users.GetRecordPerUser(System.Int32)">
@@ -70,6 +144,29 @@
             <param name="userdId"></param>
             <returns></returns>
         </member>
+        <member name="M:ServerRentCar.Controllers.Users.OrderCar(System.Int32,ServerRentCar.DTO.NewCarRentRecordDTO)">
+            <summary>
+            Order crate api for cutomer
+            </summary>
+            <param name="userId"></param>
+            <param name="carRentRecordDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Controllers.WorkerController.#ctor(Microsoft.Extensions.Logging.ILogger{ServerRentCar.Controllers.WorkerController},ServerRentCar.Services.RecordService,ServerRentCar.Services.AuthService,ServerRentCar.Services.CarsService,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Contractor
+            </summary>
+            <param name="logger"></param>
+            <param name="rentdbContext"></param>
+            <param name="recordService"></param>
+            <param name="dataAautoMapper"></param>
+            <param name="userService"></param>
+            <param name="carService"></param>
+            <param name="_configuration"></param>
+        </member>
+        <member name="P:ServerRentCar.DTO.UserDTO.BirthDate">
+              [Required]
+        </member>
         <member name="M:ServerRentCar.Services.AuthService.IsInRole(ServerRentCar.Common.Enums.Role,System.Int32)">
             <summary>
             Checks if user is in role  return true else exist or not admin false
@@ -84,6 +181,20 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:ServerRentCar.Services.CarsService.UpdateCarTypes(ServerRentCar.DTO.CarsAsTableDTO)">
+            <summary>
+            Updates cartypes object in data base
+            </summary>
+            <param name="car"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.CarsService.UpdateCar(ServerRentCar.DTO.CarsAsTableDTO)">
+            <summary>
+            Updates car object in data base
+            </summary>
+            <param name="car"></param>
+            <returns></returns>
+        </member>
         <member name="M:ServerRentCar.Services.CarsService.DeleteCar(System.String)">
             <summary>
             /Deletes car from inventory
@@ -91,7 +202,14 @@
             <param name="licensePlate"></param>
             <returns></returns>
         </member>
-        <member name="M:ServerRentCar.Services.RecordService.GetAllrecords">
+        <member name="M:ServerRentCar.Services.CarsService.DeleteCarType(System.Int32)">
+            <summary>
+            /Deletes carsTypes by carsTypesId from inventory
+            </summary>
+            <param name="licensePlate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.GetAllrecord">
             <summary>
             Gets all records
             </summary>
@@ -101,6 +219,41 @@
             <summary>
             Gets  records per user
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.MakAnOrder(ServerRentCar.DTO.NewCarRentRecordDTO,System.Int32)">
+            <summary>
+            Adding new order to system
+            </summary>
+            <param name="carRentRecordDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.FindOrder(System.String)">
+            <summary>
+            Find and create odeer summary per client
+            </summary>
+            <param name="licensePlate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.ReturnCar(ServerRentCar.DTO.OrderSummaryDTO)">
+            <summary>
+            Car return and update is free for rent
+            </summary>
+            <param name="order"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.GetAllrecordsPerUser(System.Int32)">
+            <summary>
+            Get all records per user
+            </summary>
+            <param name="filterByUserId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServerRentCar.Services.RecordService.GetAllrecordsPerUserJson(System.Int32)">
+            <summary>
+            Get all records per user in json format
+            </summary>
+            <param name="filterByUserId"></param>
             <returns></returns>
         </member>
     </members>

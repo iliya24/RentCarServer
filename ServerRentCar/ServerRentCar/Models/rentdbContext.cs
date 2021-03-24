@@ -100,6 +100,8 @@ namespace ServerRentCar.Models
 
                 entity.Property(e => e.StartRentDate).HasColumnType("date");
 
+                entity.Property(e => e.TotalCost).HasColumnType("decimal(18, 0)");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.CarRentRecords)
                     .HasForeignKey(d => d.UserId)

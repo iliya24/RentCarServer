@@ -16,14 +16,14 @@ namespace ServerRentCar.Controllers
     public class Images : ControllerBase
     {
 
-        private readonly ILogger<Users> _logger;
+        private readonly ILogger<Images> _logger;
         private rentdbContext _rentdbContext;
-     
-        public Images(ILogger<Users> logger, rentdbContext rentdbContext)
+
+        public Images(ILogger<Images> logger, rentdbContext rentdbContext)
         {
             _logger = logger;
             _rentdbContext = rentdbContext;
-            
+
         }
 
         /// <summary>
@@ -31,11 +31,13 @@ namespace ServerRentCar.Controllers
         /// </summary>
         /// <param name="licensePlate"></param>
         /// <returns></returns>
-        [HttpGet("{licensePlate}")]        
+        [HttpGet("{licensePlate}")]
         public IActionResult Get(string licensePlate)
         {
             var car = _rentdbContext.Cars.Find(licensePlate);
-            return File(car.CarImage, "image/png");
+            if (car != null)
+                return File(car.CarImage, "image/png");
+            return new BadRequestObjectResult($"No car found for {licensePlate}.");
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using ServerRentCar.Common.Enums;
+﻿using ServerRentCar.Common.Atributes;
+using ServerRentCar.Common.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,17 +10,32 @@ namespace ServerRentCar.DTO
 {
     public class UserDTO
     {
-        public int Id { get; set; }
+      //  public int Id { get; set; }
+    //    [Required]
+    //    [StringLength(9, MinimumLength = 9, ErrorMessage = "The id should be 9 lLength")]
         public string TeudZeut { get; set; }
+    //    [Required]
         public string LastName { get; set; }
+    //    [Required]
         public string FirstName { get; set; }
+     //   [Required]
         public string UserName { get; set; }
-        public DateTime? BirthDate { get; set; }
+     ///   [Required]
+        public string BirthDate { get; set; }
+      //  [Required]
+      //  [GenderValidation]
         public string Gender { get; set; }
+     //   [Required]
+     //   [EmailAddress]
         public string Email { get; set; }
+     //   [Required]
+       // [StringLength(int.MaxValue, MinimumLength = 6, ErrorMessage = "The Password should be 6 Length")]
         public string Password { get; set; }
-        public byte[] UserPicture { get; set; }
-        public byte Role { get; set; }
+        
+       // public byte[] UserPicture { get; set; }
+        //[Required]
+        //[RoleValidation]
+        public string Role { get; set; }
         
     }
 }

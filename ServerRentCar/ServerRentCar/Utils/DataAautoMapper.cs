@@ -23,21 +23,29 @@ namespace ServerRentCar.Utils
             var config = new MapperConfiguration(cfg => {
 
 
-                cfg.CreateMap<User, UserDTO>();               
+                cfg.CreateMap<User, UserDTO>()
+                .ForMember(dst => dst.BirthDate, drc => drc.MapFrom(src => src.BirthDate.Value.ToString("yyyy-MM-dd")));               
                 cfg.CreateMap<RegisterModel, User>();
-                cfg.CreateMap<CarRentRecord, CarRentRecordDTO>();
-                cfg.CreateMap<Car,CarsDTO> ();
-                cfg.CreateMap<CarsDTO, Car>();
+                cfg.CreateMap<CarRentRecord, NewCarRentRecordDTO>()
+                 .ForMember(dst => dst.StartRentDate, drc => drc.MapFrom(src => src.StartRentDate.ToString("yyyy-MM-dd")))
+                 .ForMember(dst => dst.EndRentDate, drc => drc.MapFrom(src => src.EndRentDate.ToString("yyyy-MM-dd")));
+               // .ForMember(dst => dst.ActualRentEndDate, drc => drc.MapFrom(src => src.ActualRentEndDate != null?src.ActualRentEndDate.Value.ToString("yyyy-MM-dd"):""));                
+                cfg.CreateMap<CarRentRecord, ReturnCarRentRecordDTO>();
+                cfg.CreateMap<CarsType, CarModelsTableDTO>()
+                  .ForMember(dst => dst.YearRelease, drc => drc.MapFrom(src => src.YearRelease.ToString("yyyy-MM-dd")));
+               
+
+                
+                cfg.CreateMap<Car,CarsAsTableDTO> ();
+                cfg.CreateMap<CarsAsTableDTO, Car>();
+                cfg.CreateMap<Car, CarTableDTO>();
+                
+                cfg.CreateMap<NewCarRentRecordDTO, CarRentRecord>();
             });
             return config.CreateMapper();
         }
 
-        private UserGender ConvertUserSex(bool gender)
-        {
-            if (gender)
-                return UserGender.Male;
-            return UserGender.Female;
-        }       
+          
         internal IEnumerable<Treturn> GetList<Tin, Treturn>(IEnumerable<Tin> objects)
         {
             return  _mapper.Map<IEnumerable<Treturn>>(objects);

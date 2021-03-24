@@ -9,7 +9,7 @@ namespace ServerRentCar.Common.Enums
     public enum Role:byte
     {       
         Customer=0,
-        Admin,
-        Worker
+        Admin=1,
+        Worker=2,
     }
 }
